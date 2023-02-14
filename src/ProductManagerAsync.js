@@ -30,6 +30,7 @@ class ProductManager {
 
         if(!fs.existsSync(fileName)){
 
+            //Checkea si falta algun campo
             if (product.title === undefined || product.description === undefined || isNaN(product.price) || product.thumbnail === undefined || product.code === undefined || isNaN(product.stock) || product.category === undefined) {
                 return ("Producto invalido, Complete los datos necesarios.");
             } else {
@@ -41,16 +42,19 @@ class ProductManager {
 
         } else {
 
+            //Checkea si falta algun campo
             if (product.title === undefined || product.description === undefined || isNaN(product.price) || product.thumbnail === undefined || product.code === undefined || isNaN(product.stock) || product.category === undefined){
                 return ("Usuario invalido, Complete los datos necesarios.");
             }
 
             this.products = [];
+            //trae el JSON
             let contenido = await fs.promises.readFile(fileName, "utf-8");
             this.products = JSON.parse(contenido);
             
             const codes = [];
 
+            //crea un array para ver si el producto ya esta agregado
             this.products.forEach((prod) => {
                 codes.push(prod.code);
             });
@@ -59,6 +63,7 @@ class ProductManager {
                 return (`El producto ${product.title} con el code: ${product.code} ya esta agregado`);
     
             } else {
+                //Usa el ultimo id del JSON y le suma uno
                 const newId = this.products[this.products.length - 1].id + 1;
                 product.id = newId;
                 this.products.push(product);
@@ -94,6 +99,7 @@ class ProductManager {
 
             const ids = [];
 
+            //crea un array para ver si el producto existe
             productsRead.forEach((prod) => {
                 ids.push(prod.id);
             });
@@ -101,6 +107,7 @@ class ProductManager {
             if (ids.includes(id)){
                 const arrprod = productsRead.filter(prod => prod.id === id);
                 const index = productsRead.indexOf(arrprod[0]);
+                //consigue el index del producto filtrado para devolver un objeto y no un array con un opbjeto adentro
                 return productsRead[index];
             } else {
                 return ("Not Found");
@@ -120,7 +127,8 @@ class ProductManager {
             const productsRead = await JSON.parse(contenido);
         
             const ids = [];
-    
+            
+            //crea un array para ver si el producto existe
             productsRead.forEach((prod) => {
                 ids.push(prod.id);
             });
@@ -133,6 +141,7 @@ class ProductManager {
 
                 const arrprod = productsRead.filter(prod => prod.id === reqId);
                 const index = productsRead.indexOf(arrprod[0]);
+                //consigue el index del producto filtrado para poder acceder a sus propiedades
     
                 productsRead[index].title = requestBody.title;
                 productsRead[index].description = requestBody.description;
@@ -148,41 +157,7 @@ class ProductManager {
                 return (`El producto con el id ${reqId} no existe`);
             };
         };
-
-/*
-        if(propChange === "id" || propChange !== "title" && propChange !== "description" && propChange !== "price" && propChange !== "thumbnail" && propChange !== "code" && propChange !== "stock"){
-
-            console.log("El nombre del campo a modificar no existe, recuerde que el id no se puede modificar");
-            
-        } else {
-
-            const fileName = this.path + "/products.json";
-
-            if(!fs.existsSync(fileName)){console.log(`El archivo en el path "${fileName}" no existe`);};
-
-            let contenido = await fs.promises.readFile(fileName, "utf-8");
-            const productsRead = await JSON.parse(contenido);
-
-            const ids = [];
-
-            productsRead.forEach((prod) => {
-                ids.push(prod.id);
-            });
-
-            if (ids.includes(id)){
-                productsRead.forEach((prod) => {
-                    if (prod.id === id){
-                        prod[propChange] = content;
-                    }
-                });
-                const productsStr = JSON.stringify(productsRead);
-                await fs.promises.writeFile(fileName, productsStr);
-            } else {
-                console.log("Not Found");
-            }
-        }
-        */
-    }
+    };
 
     async deleteProduct(id){
         const fileName = this.path + "/products.json";
@@ -190,7 +165,8 @@ class ProductManager {
         const productsRead = await JSON.parse(contenido);
 
         const ids = [];
-
+        
+        //crea un array para ver si el producto existe
         productsRead.forEach((prod) => {
             ids.push(prod.id);
         });
@@ -201,6 +177,7 @@ class ProductManager {
                 if (prod.id === id){
                     let index = productsRead.indexOf(prod)
                     productsRead.splice(index, 1);
+                    //El foreach compara el id y si coincide elimina el producto con el metodo splice
                 }
             });
             const productsStr = JSON.stringify(productsRead);

@@ -27,6 +27,7 @@ class cartManager {
         } else {
             let contenido = await fs.promises.readFile(fileNameCart, "utf-8");
             const cartsRead = JSON.parse(contenido);
+            //obtiene el ultimo id del array y le suma uno para luego asignarlo al id del nuevo carrito
             const newCartId = cartsRead[cartsRead.length - 1].id + 1;
             cart.id = newCartId;
             this.carts = cartsRead;
@@ -54,6 +55,7 @@ class cartManager {
             if(cartsIds.includes(idParam)){
                 const arrprod = cartsRead.filter(cart => cart.id === idParam);
                 const index = cartsRead.indexOf(arrprod[0]);
+                //si el idparam existe en el array busca el carrito y accede a su propiedad products para devolverlo
                 return cartsRead[index].products;
             } else {
                 return "no_id"
@@ -77,19 +79,23 @@ class cartManager {
         
 
         if(cartsIds.includes(cartId)){
+            //trae el producto que se va a querer agregar
             const product = await Products.getProductById(prodId);
             if(product == "Not Found" || product == "nonexistant"){
                 return (`El producto con el id ${prodId} no existe`)
             };
             const arrcart = cartsRead.filter(cart => cart.id === cartId);
             const indexCart = cartsRead.indexOf(arrcart[0]);
+            //trae el carrito al que se le va a querer agregar dicho producto
             const selectedCart = cartsRead[indexCart];
 
             const arrprod = selectedCart.products.filter(prod => prod.id === product.id);
             const indexProd = selectedCart.products.indexOf(arrprod[0]);
             const prod = selectedCart.products[indexProd];
+            //accede a la porpiedad products del carrito seleccionado
 
             if(prod){
+                //si ya existe el producto agrega +1 a quantity
                 prod.quantity = prod.quantity + 1;  
             } else {
 
@@ -101,76 +107,9 @@ class cartManager {
 
         } else {
             return (`El carrito con el id ${cartId} no existe`);
-        }
-
-            /*
-            if(cartsIds.includes(cartId)){
-            const product = await Products.getProductById(prodId);
-            const arrcart = cartsRead.filter(cart => cart.id === cartId);
-            const indexCart = cartsRead.indexOf(arrcart[0]);
-            const selectedCart = cartsRead[indexCart];
-
-            if (selectedCart.products.includes(product.id)){
-                const arrprod = selectedCart.products.filter(prod => prod.id === product.id);
-                const indexProd = selectedCart.products.indexOf(arrprod[0]);
-                const prod = selectedCart.products[indexProd];
-
-                prod.quantity = prod.quantity + 1
-            } else {
-                selectedCart.products.push({id : product.id, quantity : 1});
-            }
-
-            const updatedCartsStr = JSON.stringify(cartsRead);
-            await fs.promises.writeFile(fileNameCart, updatedCartsStr);
-
-        } else {
-            return (`El carrito con el id ${cartId} no existe`);
-        }
-        */
-
-    }
-
-    /*
-    async addProduct(idParam){
-
-        const fileNamecart = this.path + "/cart.json";
-
-        const cart = {
-            id: 0,
-            products: []
-        }
-
-        if(!fs.existsSync(fileNamecart)){
-
-            const prod = Products.getProductById(id)
-            cart.id = cart.id+1
-            cart.products.push({productId: prod.id, quantity: 1});
-            this.carts.push(cart)
-            const productsCartStr = JSON.stringify(this.carts);
-            await fs.promises.writeFile(fileName, productsCartStr);
-
-        } else {
-            let contenido = await fs.promises.readFile(fileNameCart, "utf-8");
-            const cartsRead = JSON.parse(contenido);
-
-            const cartsIds = [];
-
-            cartsRead.foreach((cart) => {
-                cartsIds.push(cart.id)
-            });
-
-            if(cartsIds.includes(idParam)){
-
-            }
-
-            const newCartId = cartsRead[cartsRead.length - 1].id + 1;
-            cart.id = newCartId
-            
-        }
-    }
-    */
-
-}
+        };
+    };
+};
 
 const Products = new ProductManager("./filesasync")
 

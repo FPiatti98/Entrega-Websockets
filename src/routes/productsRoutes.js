@@ -6,10 +6,12 @@ const router = Router();
 router.get('/products', async (request,response) => {
 
     let limit = request.query.limit;
+    //Traer todos los productos del JSON
     let productsRead = await Products.getProducts();
 
         if(limit <= productsRead.length){
             const newarr = [];
+            //Crea un nuevo array para treaer a los productos con el limite
             for (let i = 1; i <= limit; i++){
                 newarr.push(productsRead[i-1])
             }
@@ -23,8 +25,10 @@ router.get('/products/:id', async (request,response) => {
 
     const id = parseInt(request.params.id); 
 
+    //Trae el producto con el idParam
     const prod = await Products.getProductById(id);
 
+    //Checkea si el file existe o si el id del producto existe
     if (prod == "nonexistant"){
         response.status(400).send({status: "Error", message: "El archivo al que se intenta acceder es inexistente"});
     } else if(prod == "Not Found"){
@@ -33,14 +37,6 @@ router.get('/products/:id', async (request,response) => {
         response.send(prod);
     }
 
-    /*
-        if (id > 0 && id <= productsRead.length ){
-            const prod = await Products.getProductById(id);
-            response.send(prod);
-        } else {
-            response.status(400).send({status: "Error", message: `El producto con el id ${id} no existe`});
-        }
-    */
 });
 
 router.post('/', async (request, response) => {
@@ -57,12 +53,14 @@ router.put('/:id', async (request, response) => {
 
     const reqId = parseInt(request.params.id);
 
+    //checkea si se esta intentando cambiar el id
     if (request.body.id){
         return response.status(400).send({status: "Error", message: "No es posible cambiar el Id del producto"});
     }
 
     const check = await Products.updateProduct(reqId, request.body);
 
+    //si lo que devuelve el metodo es un error envia un status 400
     if (check){
         return response.status(400).send({status: "Error", message: check});
     } else {
@@ -75,6 +73,7 @@ router.delete('/:id', async (request, response) => {
 
     const id = parseInt(request.params.id); 
     const check = await Products.deleteProduct(id);
+    //si lo que devuelve el metodo es un error envia un status 400
     if (check){
         return response.status(400).send({status: "Error", message: check});
     }else {
@@ -83,21 +82,5 @@ router.delete('/:id', async (request, response) => {
 })
 
 const Products = new ProductManager("./filesasync");
-
-/*
-const testeo = async(test) => {
-
-    //await test.addProduct("monitor samsung", "60hz, 1080p, 24 pulgadas", 40000, "/images/monitor1.png", "xyz3215", 5);
-    //await test.addProduct("monitor samsung", "60hz, 1080p, 24 pulgadas", 40000, "/images/monitor1.png", "abc123", 5);
-    //await test.addProduct("monitor phillips", "144hz, 1440p, 32 pulgadas", 120000, "/images/monitor2.png", "fra698", 3);
-    //await test.getProducts();
-    //await test.getProductById(3);
-    //await test.updateProduct(2, "title", "TEST");
-    //await test.deleteProduct(1);
-
-}
-
-testeo(test);
-*/
 
 export default router;

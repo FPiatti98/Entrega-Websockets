@@ -14,6 +14,7 @@ router.get('/carts/:id', async (request, response) => {
 
     const check = await Carts.getCartProducts(id)
 
+    //Checkea si existe el JSON de los carritos y si el carrito que se busca existe
     if(check === "non_existant"){
         return response.status(400).send({status: "Error", message: "El archivo Carts.json no existe"});
     } else if (check === "no_id"){
