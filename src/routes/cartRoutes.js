@@ -1,5 +1,6 @@
 import {response, Router} from 'express';
 import cartManager from '../cartManagerAsync.js';
+import __dirname from '../util.js';
 
 const router = Router();
 

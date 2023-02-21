@@ -1,0 +1,59 @@
+<div>
+    <h1>Agregar Producto</h1>
+    <div>
+        <p>
+            <label>Introduce el titulo del producto</label>
+            <input id="title" type="text">
+        </p>
+        <p>
+            <label>Introduce la descripcion del producto</label>
+            <input id="description" type="text">
+        </p>
+        <p>
+            <label>Introduce el precio del producto</label>
+            <input id="price" type="number">
+        </p>
+        <p>
+            <label>Introduce el path de la imagen del producto</label>
+            <input id="thumbnail" type="text">
+        </p>
+        <p>
+            <label>Introduce el codigo del producto</label>
+            <input id="code" type="text">
+        </p>
+        <p>
+            <label>Introduce el stock del producto</label>
+            <input id="stock" type="number">
+        </p>
+        <p>
+            <label>Introduce la categoria del producto</label>
+            <input id="category" type="text">
+        </p>
+        <button id="createProd">Crear Producto</button>
+    </div>
+    <div>
+        <h1>Eliminar Producto</h1>
+        <form>
+            <label>Introduce el id del producto a eliminar</label>
+            <input id="deleteId" type="number">
+        </form>
+        <button id="deleteProd">Eliminar Producto</button>
+    </div>
+    <div id="products">
+    {{#each products}}
+        <h4>Producto: {{this.id}}</h4>
+        <ul>
+            <li>Titulo: {{this.title}}</li>
+            <li>Descripcion: {{this.description}}</li>
+            <li>Precio: {{this.price}}</li>
+            <li>Imagen: {{this.thumbnail}}</li>
+            <li>Codigo: {{this.code}}</li>
+            <li>Stock: {{this.stock}}</li>
+            <li>Estado: {{this.status}}</li>
+            <li>Categoria: {{this.category}}</li>
+        </ul>
+    {{/each}}
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realTimeProducts.js"></script>

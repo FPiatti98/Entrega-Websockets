@@ -1,5 +1,5 @@
 import {response, Router} from 'express';
-import ProductManager from "../ProductManagerAsync.js"
+import ProductManager from "../ProductManagerAsync.js";
 
 const router = Router();
 
@@ -15,9 +15,13 @@ router.get('/products', async (request,response) => {
             for (let i = 1; i <= limit; i++){
                 newarr.push(productsRead[i-1])
             }
-            response.send(newarr);
+            response.render('home',{
+                products:newarr
+            });
         } else {
-            response.send(productsRead);
+            response.render('home', {
+                products:productsRead
+            });
         }
 });
 
@@ -41,7 +45,7 @@ router.get('/products/:id', async (request,response) => {
 
 router.post('/', async (request, response) => {
     let product = request.body;
-    let estado = await Products.addProduct(product.title, product.description, product.price, product.thumbnail, product.code, product.stock, product.category);;
+    let estado = await Products.addProduct(product.title, product.description, product.price, product.thumbnail, product.code, product.stock, product.category);
     if(estado){
         response.status(400).send({status: "Error", message: estado});
     } else {  
@@ -79,6 +83,14 @@ router.delete('/:id', async (request, response) => {
     }else {
         return response.send({status: "Successful", message: `El producto con el id ${id} fue eliminado exitosamente`});
     }
+})
+
+router.get('/', (req,res) => {
+    let user = {
+        name:"fran",
+        age: 24
+    }
+    res.render('test', user);
 })
 
 const Products = new ProductManager("./filesasync");
